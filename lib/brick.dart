@@ -17,13 +17,13 @@ class MyBrick extends StatelessWidget {
   Widget build(BuildContext context) {
     return brickCollision
         ? Container(
-            // alignment: Alignment(brickX, brickY),
-            // child: Container(
-            //   height: MediaQuery.of(context).size.height * brickHight / 2,
-            //   width: MediaQuery.of(context).size.height * brickWidth / 2,
-            //   color: Colors.blue,
-            // ),
-            )
+            alignment: Alignment(brickX, brickY),
+            child: Container(
+              height: MediaQuery.of(context).size.height * brickHight / 2,
+              width: MediaQuery.of(context).size.height * brickWidth / 2,
+              color: Colors.blue,
+            ),
+          )
         : Container(
             alignment: Alignment(brickX, brickY),
             child: Container(
