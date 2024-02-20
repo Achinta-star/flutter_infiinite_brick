@@ -17,7 +17,8 @@ class MyBrick extends StatelessWidget {
   Widget build(BuildContext context) {
     return brickCollision
         ? Container(
-            alignment: Alignment(brickX, brickY),
+            alignment:
+                Alignment((2 * brickX + brickWidth) / (2 - brickWidth), brickY),
             child: Container(
               height: MediaQuery.of(context).size.height * brickHight / 2,
               width: MediaQuery.of(context).size.height * brickWidth / 2,

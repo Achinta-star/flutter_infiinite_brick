@@ -14,30 +14,43 @@ class HomePage extends StatefulWidget {
 
 enum direction1 { UP1, DOWN1, LEFT1, RIGHT1 }
 
-enum direction2 { UP2, DOWN2, LEFT2, RIGHT2 }
-
 class _HomePageState extends State<HomePage> {
-//ball var
-  double ball1X = 0.1;
+// ball var
+  double ball1X = 0;
   double ball1Y = 0;
+  double ball2X = -0.1;
+  double ball2Y = 0;
+
   double ball1Xincrements = 0.01;
   double ball1Yincrements = 0.01;
   var ball1YDirection = direction1.DOWN1;
   var ball1XDirection = direction1.LEFT1;
 
-  double ball2X = -0.3;
-  double ball2Y = 0;
   double ball2Xincrements = 0.01;
   double ball2Yincrements = 0.01;
-  var ball2XDirection = direction2.DOWN2;
-  var ball2YDirection = direction2.LEFT2;
+  var ball2YDirection = direction1.DOWN1;
+  var ball2XDirection = direction1.LEFT1;
+
   //brick var
-  double brickX = 0;
-  double brickY = -0.9;
-  double brickHight = 0.04;
-  double brickWidth = 0.04;
+  static double brick1X = -1 + wallGap;
+  static double brick1Y = -0.9;
+  static double brickHight = 0.04;
+  static double brickWidth = 0.04;
+  static double brickGap = 0;
+  static int numberOfBricksInRow = 3;
+  static double wallGap = 0.5 *
+      (2 -
+          numberOfBricksInRow * brickWidth -
+          (numberOfBricksInRow - 1) * brickGap);
 
   bool brickCollision = false;
+
+  List MyBricks = [
+    [brick1X + 0 * (brickWidth + brickGap), brick1Y, false],
+    [brick1X + 1 * (brickWidth + brickGap), brick1Y, false],
+    [brick1X + 2 * (brickWidth + brickGap), brick1Y, false],
+  ];
+
   // game setting
   bool hasGameStarted = false;
 
@@ -49,37 +62,46 @@ class _HomePageState extends State<HomePage> {
 
       //update direction for ball2
       updateDirection2();
-
       // move ball1
       moveBall1();
       // move ball2
       moveBall2();
-
       // chack if break is hit
       cheakForHitBricks();
     });
   }
 
   void cheakForHitBricks() {
-    if (ball1X >= brickX &&
-        ball1X <= brickX + brickWidth &&
-        ball1Y <= brickY + brickHight &&
-        brickCollision == false) {
-      setState(() {
-        brickCollision = true;
-        ball1YDirection = direction1.DOWN1;
-      });
+    for (int i = 0; i < MyBricks.length; i++) {
+      if (ball1X >= MyBricks[i][0] &&
+          ball1X <= MyBricks[i][0] + brickWidth &&
+          ball1Y <= MyBricks[i][1] + brickHight &&
+          MyBricks[i][2] == false) {
+        setState(() {
+          MyBricks[i][2] = true;
+
+          double leftSideDist = (MyBricks[i][0] - ball1X).abs();
+          double rightSideDist = (MyBricks[i][0] + brickWidth - ball1X).abs();
+          double topSideDist = (MyBricks[i][1] - ball1X).abs();
+          double bottomSideDist = (MyBricks[i][1] + brickWidth - ball1Y).abs();
+
+          ball1YDirection = direction1.DOWN1;
+          ball1YDirection = direction1.UP1;
+          ball1YDirection = direction1.LEFT1;
+          ball1YDirection = direction1.RIGHT1;
+        });
+      }
     }
   }
 
   void moveBall1() {
     setState(() {
       // horizontlly
-      if (ball1XDirection == direction1.LEFT1) {
-        ball1X -= ball1Xincrements;
-      } else if (ball1XDirection == direction1.RIGHT1) {
-        ball1X += ball1Xincrements;
-      }
+      // if (ball1XDirection == direction1.LEFT1) {
+      //   ball1X -= ball1Xincrements;
+      // } else if (ball1XDirection == direction1.RIGHT1) {
+      //   ball1X += ball1Xincrements;
+      // }
       // vertically
       if (ball1YDirection == direction1.DOWN1) {
         ball1Y += ball1Yincrements;
@@ -91,21 +113,22 @@ class _HomePageState extends State<HomePage> {
 
   void moveBall2() {
     setState(() {
-      if (ball2XDirection == direction2.LEFT2) {
-        ball2X -= ball2Xincrements;
-      } else if (ball2XDirection == direction2.RIGHT2) {
-        ball2X += ball2Xincrements;
-      }
-
-      if (ball2YDirection == direction2.DOWN2) {
+      // horizontlly
+      // if (ball2XDirection == direction1.LEFT1) {
+      //   ball2X -= ball2Xincrements;
+      // } else if (ball2XDirection == direction1.RIGHT1) {
+      //   ball2X += ball2Xincrements;
+      // }
+      // vertically
+      if (ball2YDirection == direction1.DOWN1) {
         ball2Y += ball2Yincrements;
-      } else if (ball2YDirection == direction2.UP2) {
+      } else if (ball2YDirection == direction1.UP1) {
         ball2Y -= ball2Yincrements;
       }
     });
   }
 
-// update direction
+//update direction
   void updateDirection1() {
     setState(() {
       if (ball1Y >= 1) {
@@ -120,16 +143,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //update direction
   void updateDirection2() {
     setState(() {
       if (ball2Y >= 1) {
-        ball2YDirection = direction2.UP2;
+        ball2YDirection = direction1.UP1;
       } else if (ball2Y <= -1) {
-        ball2YDirection = direction2.DOWN2;
+        ball2YDirection = direction1.DOWN1;
       } else if (ball2X >= 1) {
-        ball2XDirection = direction2.LEFT2;
+        ball2XDirection = direction1.LEFT1;
       } else if (ball2X <= -1) {
-        ball2XDirection = direction2.RIGHT2;
+        ball2XDirection = direction1.RIGHT1;
       }
     });
   }
@@ -151,6 +175,7 @@ class _HomePageState extends State<HomePage> {
                 ball1X: ball1X,
                 ball1Y: ball1Y,
               ),
+
               MyBall2(
                 ball2X: ball2X,
                 ball2Y: ball2Y,
@@ -158,12 +183,26 @@ class _HomePageState extends State<HomePage> {
 
               //bricks
               MyBrick(
-                brickX: brickX,
-                brickY: brickY,
+                brickX: MyBricks[0][0],
+                brickY: MyBricks[0][1],
+                brickCollision: MyBricks[0][2],
                 brickHight: brickHight,
                 brickWidth: brickWidth,
-                brickCollision: brickCollision,
-              )
+              ),
+              MyBrick(
+                brickX: MyBricks[1][0],
+                brickY: MyBricks[1][1],
+                brickCollision: MyBricks[1][2],
+                brickHight: brickHight,
+                brickWidth: brickWidth,
+              ),
+              MyBrick(
+                brickX: MyBricks[2][0],
+                brickY: MyBricks[2][1],
+                brickCollision: MyBricks[2][2],
+                brickHight: brickHight,
+                brickWidth: brickWidth,
+              ),
             ],
           ),
         ),
